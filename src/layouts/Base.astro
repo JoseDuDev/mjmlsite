@@ -1,0 +1,83 @@
+---
+import { Font } from 'astro:assets'
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+import { empresa } from '../data/site'
+import '../styles/global.css'
+
+interface Props {
+  titulo: string
+  descricao: string
+  /** Caminho da página, com barra inicial. Usado no canonical e no OG. */
+  caminho?: string
+  noindex?: boolean
+}
+
+const { titulo, descricao, caminho = '/', noindex = false } = Astro.props
+
+const tituloCompleto =
+  caminho === '/' ? `${empresa.marca} — ${empresa.slogan}` : `${titulo} · ${empresa.marca}`
+
+const canonical = new URL(caminho, Astro.site ?? empresa.url).href
+
+// Dados estruturados: ajuda o Google a entender que MJML é o nome fantasia
+// da JEL, e liga CNPJ, contato e produtos à mesma entidade.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: empresa.marca,
+  legalName: empresa.razaoSocial,
+  taxID: empresa.cnpj,
+  url: empresa.url,
+  description: empresa.descricao,
+  slogan: empresa.slogan,
+  areaServed: { '@type': 'Country', name: 'Brasil' },
+  address: { '@type': 'PostalAddress', addressCountry: 'BR' },
+  knowsAbout: [
+    'Desenvolvimento de software',
+    'Automação de WhatsApp',
+    'Inteligência artificial',
+    'E-commerce',
+    'Integrações e APIs',
+  ],
+}
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={descricao} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#2563eb" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={empresa.marca} />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL('/og.png', empresa.url).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="generator" content={Astro.generator} />
+
+    <Font cssVariable="--font-inter" preload />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <Header />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

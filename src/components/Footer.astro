@@ -1,0 +1,149 @@
+---
+import Logo from './Logo.astro'
+import { empresa, produtos, whatsappLink } from '../data/site'
+
+const ano = new Date().getFullYear()
+---
+
+<footer class="ft">
+  <div class="container">
+    <div class="ft__top">
+      <div class="ft__brand">
+        <Logo />
+        <p class="ft__desc">{empresa.descricao}</p>
+        <p class="ft__legal">
+          {empresa.razaoSocial}<br />
+          CNPJ {empresa.cnpj}
+        </p>
+      </div>
+
+      <nav class="ft__cols" aria-label="Rodapé">
+        <div class="ft__col">
+          <h2>Produtos</h2>
+          <ul>
+            {
+              produtos.map((p) => (
+                <li>
+                  {p.disponivel && p.url ? (
+                    <a href={p.url}>{p.nome}</a>
+                  ) : (
+                    <span class="ft__soon">{p.nome} · em breve</span>
+                  )}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="ft__col">
+          <h2>Empresa</h2>
+          <ul>
+            <li><a href="/#servicos">Serviços</a></li>
+            <li><a href="/#como-funciona">Como funciona</a></li>
+            <li><a href="/#faq">Dúvidas frequentes</a></li>
+            <li><a href="/contato">Contato</a></li>
+          </ul>
+        </div>
+
+        <div class="ft__col">
+          <h2>Contato</h2>
+          <ul>
+            <li>
+              <a href={whatsappLink()} target="_blank" rel="noopener">WhatsApp</a>
+            </li>
+            <li><a href={`mailto:${empresa.email}`}>{empresa.email}</a></li>
+            <li><a href="/politica-de-privacidade">Política de privacidade</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="ft__bottom">
+      <p>© {ano} {empresa.razaoSocial}. Todos os direitos reservados.</p>
+      <p>Feito no Brasil.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ft {
+    background: var(--bg-2);
+    border-top: 1px solid var(--line);
+    padding-block: clamp(3rem, 6vw, 4.5rem) 2rem;
+  }
+
+  .ft__top {
+    display: grid;
+    gap: 3rem;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 56rem) {
+    .ft__top {
+      grid-template-columns: minmax(16rem, 22rem) 1fr;
+      gap: 4rem;
+    }
+  }
+
+  .ft__desc {
+    margin-top: 1rem;
+    font-size: var(--t-sm);
+    color: var(--muted);
+    max-width: 34ch;
+  }
+
+  .ft__legal {
+    margin-top: 1.25rem;
+    font-size: var(--t-xs);
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .ft__cols {
+    display: grid;
+    gap: 2.5rem 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  }
+
+  .ft__col h2 {
+    font-size: var(--t-xs);
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .ft__col ul {
+    display: grid;
+    gap: 0.6875rem;
+  }
+
+  .ft__col a,
+  .ft__soon {
+    font-size: var(--t-sm);
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .ft__col a:hover {
+    color: var(--blue);
+    text-decoration: underline;
+  }
+
+  .ft__soon {
+    opacity: 0.75;
+  }
+
+  .ft__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-size: var(--t-xs);
+    color: var(--muted);
+  }
+</style>

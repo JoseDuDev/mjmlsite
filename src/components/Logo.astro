@@ -1,0 +1,41 @@
+---
+/**
+ * Marca MJML.
+ *
+ * O wordmark é texto com gradiente (background-clip), não imagem: fica nítido
+ * em qualquer tela, não pesa nada e acompanha a fonte do site. A arte PNG
+ * entregue ainda precisa ser vetorizada — quando houver SVG oficial, este
+ * componente é o único lugar a trocar.
+ */
+interface Props {
+  /** Marca em branco sólido, para uso sobre fundo escuro/gradiente. */
+  invertido?: boolean
+  class?: string
+}
+
+const { invertido = false, class: className = '' } = Astro.props
+---
+
+<span class:list={['logo', { 'logo--inv': invertido }, className]}>MJML</span>
+
+<style>
+  .logo {
+    display: inline-block;
+    font-size: 1.375rem;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    /* Sem isso o gradiente some no Safari em alguns contextos de composição */
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logo--inv {
+    background: none;
+    color: #fff;
+    -webkit-text-fill-color: #fff;
+  }
+</style>

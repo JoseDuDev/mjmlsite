@@ -1,0 +1,423 @@
+---
+import Base from '../layouts/Base.astro'
+import Icon from '../components/Icon.astro'
+import { empresa, produtos, produtosDisponiveis, whatsappLink } from '../data/site'
+import type { Produto } from '../data/site'
+
+// Uma rota por produto disponível: /atende e /agenda hoje; quando Aluga,
+// Delivery e Loja saírem do "em breve", a página nasce sozinha.
+export function getStaticPaths() {
+  return produtosDisponiveis.map((produto) => ({
+    params: { produto: produto.id },
+    props: { produto },
+  }))
+}
+
+interface Props {
+  produto: Produto
+}
+
+const { produto } = Astro.props
+const landing = produto.landing
+
+const outros = produtos.filter((p) => p.id !== produto.id && p.disponivel)
+const msg = `Olá! Vim pelo site e quero saber mais sobre o ${produto.nome}.`
+---
+
+<Base
+  titulo={`${produto.nome} — ${produto.tagline}`}
+  descricao={produto.descricao}
+  caminho={`/${produto.id}`}
+>
+  <!-- ── Topo ─────────────────────────────────────────────── -->
+  <section class="topo">
+    <div class="container topo__in">
+      <a class="voltar" href="/#produtos">
+        <span aria-hidden="true">←</span>
+        Todos os produtos
+      </a>
+
+      <p class="eyebrow">{produto.tagline}</p>
+      <h1 class="topo__h1">
+        {produto.nome}
+      </h1>
+      <p class="lead topo__lead">{produto.descricao}</p>
+
+      <div class="btn-row topo__ctas">
+        <a
+          class="btn btn--primary btn--lg"
+          href={whatsappLink(msg)}
+          target="_blank"
+          rel="noopener"
+        >
+          <Icon nome="whatsapp" size={18} />
+          Quero conhecer
+        </a>
+        {
+          produto.url && (
+            <a class="btn btn--ghost btn--lg" href={produto.url} target="_blank" rel="noopener">
+              Acessar a plataforma
+            </a>
+          )
+        }
+      </div>
+
+      <p class="topo__quem">{produto.paraQuem}</p>
+    </div>
+  </section>
+
+  <!-- ── Problema ─────────────────────────────────────────── -->
+  {
+    landing && (
+      <section class="section section--alt">
+        <div class="container">
+          <div class="problema">
+            <p class="eyebrow">O problema</p>
+            <p class="problema__texto">{landing.problema}</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- ── O que faz ────────────────────────────────────────── -->
+  <section class="section">
+    <div class="container recursos">
+      <div>
+        <p class="eyebrow">O que o {produto.nome} faz</p>
+        <h2 class="h2 recursos__h2">Feito para resolver, não para impressionar</h2>
+        <p class="lead recursos__lead">
+          Nada de recurso que ninguém usa. Cada item aqui existe porque resolve um problema que
+          aparece todo dia.
+        </p>
+        <a class="btn btn--primary recursos__cta" href={whatsappLink(msg)} target="_blank" rel="noopener">
+          <Icon nome="whatsapp" size={18} />
+          Falar sobre o {produto.nome}
+        </a>
+      </div>
+
+      <ul class="checks recursos__lista">
+        {produto.bullets.map((b) => <li>{b}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Passos ───────────────────────────────────────────── -->
+  {
+    landing && (
+      <section class="section section--alt">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">Como começa</p>
+            <h2 class="h2">No ar em poucos dias, não em meses</h2>
+            <p class="lead">
+              O sistema já está construído. O que resta é configurar para o seu negócio — e disso
+              cuidamos nós.
+            </p>
+          </div>
+
+          <ol class="passos">
+            {landing.passos.map((p, i) => (
+              <li class="passo">
+                <span class="passo__num">{String(i + 1).padStart(2, '0')}</span>
+                <h3 class="passo__titulo">{p.titulo}</h3>
+                <p class="passo__texto">{p.texto}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- ── Outros produtos ──────────────────────────────────── -->
+  {
+    outros.length > 0 && (
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">Também da MJML</p>
+            <h2 class="h2">Funciona ainda melhor junto</h2>
+          </div>
+          <div class="grid grid--2">
+            {outros.map((o) => (
+              <a class="card outro" href={`/${o.id}`}>
+                <span class="outro__icon">
+                  <Icon nome={o.icone as any} size={20} />
+                </span>
+                <h3 class="outro__nome">{o.nome}</h3>
+                <p class="outro__desc">{o.tagline}</p>
+                <span class="outro__link">
+                  Conhecer
+                  <Icon nome="arrow" size={15} />
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- ── CTA ──────────────────────────────────────────────── -->
+  <section class="cta">
+    <div class="container cta__in">
+      <h2 class="cta__h2">Quer ver o {produto.nome} funcionando?</h2>
+      <p class="cta__p">
+        Chame no WhatsApp e a gente mostra na prática, com exemplos do seu tipo de negócio. Sem custo
+        e sem compromisso.
+      </p>
+      <div class="btn-row cta__btns">
+        <a
+          class="btn btn--solid-light btn--lg"
+          href={whatsappLink(msg)}
+          target="_blank"
+          rel="noopener"
+        >
+          <Icon nome="whatsapp" size={18} />
+          Chamar no WhatsApp
+        </a>
+        <a class="btn btn--light btn--lg" href={`mailto:${empresa.email}`}>Enviar um e-mail</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ── Topo ── */
+  .topo {
+    position: relative;
+    padding-block: clamp(2.5rem, 6vw, 4rem) clamp(3rem, 7vw, 5rem);
+    overflow: hidden;
+  }
+
+  .topo::before {
+    content: '';
+    position: absolute;
+    top: -20rem;
+    left: 50%;
+    width: min(56rem, 130vw);
+    height: 36rem;
+    transform: translateX(-50%);
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      rgba(124, 58, 237, 0.1),
+      rgba(37, 99, 235, 0.06) 45%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  .topo__in {
+    position: relative;
+    max-width: 48rem;
+  }
+
+  /* `flex` + `width: fit-content` em vez de `inline-flex`: como inline, o link
+     dividia a linha com o eyebrow logo abaixo e os dois saíam colados. */
+  .voltar {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.4375rem;
+    margin-bottom: 2rem;
+    font-size: var(--t-sm);
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .voltar:hover {
+    color: var(--blue);
+    text-decoration: none;
+  }
+
+  .topo__h1 {
+    margin-top: 0.75rem;
+    font-size: var(--t-display);
+  }
+
+  .topo__lead {
+    margin-top: 1.25rem;
+  }
+
+  .topo__ctas {
+    margin-top: 2rem;
+  }
+
+  .topo__quem {
+    margin-top: 1.75rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line);
+    font-size: var(--t-sm);
+    color: var(--muted);
+  }
+
+  /* ── Problema ── */
+  .problema {
+    max-width: 50rem;
+  }
+
+  .problema__texto {
+    margin-top: 1rem;
+    font-size: clamp(1.25rem, 1rem + 1.4vw, 1.75rem);
+    line-height: 1.45;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    text-wrap: pretty;
+  }
+
+  /* ── Recursos ── */
+  .recursos {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  @media (min-width: 56rem) {
+    .recursos {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+  }
+
+  .recursos__h2 {
+    margin-top: 0.75rem;
+  }
+
+  .recursos__lead {
+    margin-top: 1rem;
+  }
+
+  .recursos__cta {
+    margin-top: 1.75rem;
+  }
+
+  .recursos__lista {
+    gap: 1rem;
+    padding: clamp(1.5rem, 3vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    background: var(--bg-2);
+  }
+
+  .recursos__lista li {
+    font-size: 1rem;
+    color: var(--ink-2);
+  }
+
+  /* ── Passos ── */
+  .passos {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    padding: 0;
+    list-style: none;
+  }
+
+  .passo {
+    padding: 1.75rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+  }
+
+  .passo__num {
+    display: inline-grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--grad);
+    color: #fff;
+    font-size: var(--t-xs);
+    font-weight: 700;
+  }
+
+  .passo__titulo {
+    margin-top: 1.125rem;
+    font-size: var(--t-h3);
+  }
+
+  .passo__texto {
+    margin-top: 0.625rem;
+    font-size: var(--t-sm);
+    color: var(--muted);
+  }
+
+  /* ── Outros ── */
+  .outro {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .outro:hover {
+    border-color: #cbd5e1;
+    box-shadow: var(--shadow);
+    text-decoration: none;
+  }
+
+  .outro__icon {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--r-sm);
+    background: var(--grad);
+    color: #fff;
+    margin-bottom: 1.125rem;
+  }
+
+  .outro__nome {
+    font-size: 1.25rem;
+  }
+
+  .outro__desc {
+    margin-top: 0.375rem;
+    font-size: var(--t-sm);
+    color: var(--muted);
+  }
+
+  .outro__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-top: 1.25rem;
+    font-size: var(--t-sm);
+    font-weight: 600;
+    color: var(--blue);
+  }
+
+  /* ── CTA ── */
+  .cta {
+    background: var(--grad);
+    color: #fff;
+    padding-block: clamp(3.5rem, 8vw, 5.5rem);
+  }
+
+  .cta__in {
+    max-width: 44rem;
+    text-align: center;
+  }
+
+  .cta__h2 {
+    color: #fff;
+    font-size: var(--t-h2);
+  }
+
+  .cta__p {
+    margin-top: 1rem;
+    font-size: var(--t-lead);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .cta__btns {
+    justify-content: center;
+    margin-top: 2rem;
+  }
+</style>

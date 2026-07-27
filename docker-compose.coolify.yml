@@ -1,0 +1,57 @@
+# docker-compose.coolify.yml — site institucional sob Coolify (Hetzner / mjml.com.br)
+#
+# Mesmo padrão dos outros projetos da plataforma (Atendefy e Horafy):
+#   - sem proxy próprio: quem é dono das portas 80/443 é o Traefik do Coolify.
+#     Cada projeto trazendo o próprio Caddy colidiria no mesmo host.
+#   - nenhuma porta publicada: o Traefik alcança o container pela rede.
+#   - imagem pré-buildada do GHCR: o build acontece no GitHub Actions, nunca na
+#     VPS. Build de Node numa máquina de 8 GB rodando produção é pedir para
+#     derrubar os containers vizinhos.
+#
+# Domínios a cadastrar na UI do Coolify (o Coolify gera as labels do Traefik):
+#   https://mjml.com.br
+#   https://www.mjml.com.br     → o nginx redireciona 301 para o apex
+#
+# Certificado: HTTP-01 comum resolve. Apex e www são 2º/3º nível, cobertos pelo
+# Universal SSL grátis da Cloudflare — ao contrário dos hosts de 4º nível dos
+# SaaS (ver §4.1 e §4.2 do PLANO-DEPLOY-FASE1.md). Estes dois PODEM ficar em
+# nuvem laranja depois que o certificado sair, e é onde o CDN realmente rende.
+#
+# Variáveis a definir na UI do Coolify:
+#   GITHUB_REPOSITORY   ex.: joses/mjml-site  (minúsculo)
+#   IMAGE_TAG           latest, ou o SHA de um commit para fixar/voltar versão
+name: mjml-site
+
+services:
+  site:
+    image: ghcr.io/${GITHUB_REPOSITORY:?defina GITHUB_REPOSITORY}:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+
+    # Container só de nginx servindo HTML estático. Os limites existem para que
+    # um pico aqui nunca roube memória do Postgres ou das APIs .NET.
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 32M
+
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://localhost/health || exit 1']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+    networks:
+      - mjml-site
+
+networks:
+  mjml-site:
+    driver: bridge

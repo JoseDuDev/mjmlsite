@@ -1,0 +1,614 @@
+---
+import Base from '../layouts/Base.astro'
+import Icon from '../components/Icon.astro'
+import { empresa, produtos, servicos, etapas, publico, faq, whatsappLink } from '../data/site'
+
+// O que está no ar ganha cartão grande; o que ainda não existe vira uma tira
+// discreta embaixo. Dar o mesmo peso aos dois desperdiça o espaço nobre da
+// dobra com produto que ninguém pode comprar hoje — e ainda deixava um vão
+// órfão na grade de 3 colunas com 5 itens.
+const disponiveis = produtos.filter((p) => p.disponivel)
+const emBreve = produtos.filter((p) => !p.disponivel)
+---
+
+<Base
+  titulo="Início"
+  descricao="Sistemas, sites e automações sob medida para pequenas e médias empresas. Atendimento no WhatsApp com IA, agendamento online, delivery e e-commerce."
+  caminho="/"
+>
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="container hero__in">
+      <p class="eyebrow">Desenvolvimento de software e SaaS</p>
+      <h1 class="hero__h1">
+        Tecnologia que faz sua empresa <span class="grad-text">vender mais</span> e trabalhar melhor
+      </h1>
+      <p class="lead hero__lead">
+        Criamos sistemas, sites e automações sob medida para pequenas e médias empresas — e temos
+        produtos prontos para você começar esta semana, sem projeto e sem obra.
+      </p>
+      <div class="btn-row hero__ctas">
+        <a class="btn btn--primary btn--lg" href={whatsappLink()} target="_blank" rel="noopener">
+          <Icon nome="whatsapp" size={18} />
+          Falar no WhatsApp
+        </a>
+        <a class="btn btn--ghost btn--lg" href="#produtos">Ver produtos</a>
+      </div>
+      <p class="hero__trust">
+        Diagnóstico gratuito · Proposta por escrito antes de começar · Atendemos todo o Brasil
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Produtos ─────────────────────────────────────────── -->
+  <section class="section section--alt" id="produtos">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Produtos</p>
+        <h2 class="h2">Sistemas prontos, no ar em poucos dias</h2>
+        <p class="lead">
+          Você não precisa de um projeto sob medida para resolver um problema comum. Estes produtos
+          já estão construídos — a gente só configura para o seu negócio.
+        </p>
+      </div>
+
+      <div class="grid grid--2">
+        {
+          disponiveis.map((p) => (
+            <article class="card prod">
+              <div class="prod__top">
+                <span class="prod__icon">
+                  <Icon nome={p.icone as any} size={22} />
+                </span>
+                <span class="tag tag--live">
+                  <span class="dot" />
+                  Disponível
+                </span>
+              </div>
+
+              <h3 class="prod__nome">{p.nome}</h3>
+              <p class="prod__tagline">{p.tagline}</p>
+              <p class="prod__desc">{p.descricao}</p>
+
+              <ul class="checks prod__bullets">
+                {p.bullets.slice(0, 3).map((b) => (
+                  <li>{b}</li>
+                ))}
+              </ul>
+
+              <a class="prod__link" href={`/${p.id}`}>
+                Conhecer o {p.nome}
+                <Icon nome="arrow" size={15} />
+              </a>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="breve">
+        <p class="breve__label">Em breve na plataforma</p>
+        <ul class="breve__lista">
+          {
+            emBreve.map((p) => (
+              <li class="breve__item">
+                <span class="breve__icon">
+                  <Icon nome={p.icone as any} size={18} />
+                </span>
+                <span class="breve__txt">
+                  <strong>{p.nome}</strong>
+                  <span>{p.tagline}</span>
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Serviços ─────────────────────────────────────────── -->
+  <section class="section" id="servicos">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Serviços</p>
+        <h2 class="h2">Quando o pronto não resolve, a gente constrói</h2>
+        <p class="lead">
+          Cada empresa trabalha de um jeito. Quando nenhum sistema de prateleira se encaixa,
+          desenvolvemos exatamente o que a sua operação precisa.
+        </p>
+      </div>
+
+      <div class="grid grid--2">
+        {
+          servicos.map((s) => (
+            <article class="card serv">
+              <span class="serv__icon">
+                <Icon nome={s.icone as any} size={22} />
+              </span>
+              <h3 class="serv__titulo">{s.titulo}</h3>
+              <p class="serv__desc">{s.descricao}</p>
+              <ul class="serv__itens">
+                {s.itens.map((i) => (
+                  <li>{i}</li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Como funciona ────────────────────────────────────── -->
+  <section class="section section--alt" id="como-funciona">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Como funciona</p>
+        <h2 class="h2">Do problema ao sistema no ar, em quatro passos</h2>
+        <p class="lead">
+          Sem contrato longo antes de você entender o que vai receber. Sem surpresa no preço no meio
+          do caminho.
+        </p>
+      </div>
+
+      <ol class="etapas">
+        {
+          etapas.map((e) => (
+            <li class="etapa">
+              <span class="etapa__num">{e.numero}</span>
+              <h3 class="etapa__titulo">{e.titulo}</h3>
+              <p class="etapa__desc">{e.descricao}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Público ──────────────────────────────────────────── -->
+  <section class="section">
+    <div class="container publico">
+      <div>
+        <p class="eyebrow">Para quem</p>
+        <h2 class="h2 publico__h2">Empresas que precisam de solução, não de software</h2>
+        <p class="lead publico__lead">
+          Nosso cliente raramente quer discutir tecnologia. Quer atender melhor, perder menos tempo e
+          vender mais. A tecnologia é meio, não conversa.
+        </p>
+      </div>
+      <ul class="chips">
+        {publico.map((p) => <li class="chip">{p}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── FAQ ──────────────────────────────────────────────── -->
+  <section class="section section--alt" id="faq">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Dúvidas frequentes</p>
+        <h2 class="h2">O que perguntam antes de fechar</h2>
+      </div>
+
+      <div class="faq">
+        {
+          faq.map((f) => (
+            <details class="faq__item">
+              <summary class="faq__q">
+                {f.pergunta}
+                <span class="faq__sinal" aria-hidden="true" />
+              </summary>
+              <p class="faq__a">{f.resposta}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA final ────────────────────────────────────────── -->
+  <section class="cta">
+    <div class="container cta__in">
+      <h2 class="cta__h2">Vamos conversar sobre o seu negócio?</h2>
+      <p class="cta__p">
+        Trinta minutos, sem custo e sem compromisso. Você sai da conversa com um caminho — mesmo que
+        não feche com a gente.
+      </p>
+      <div class="btn-row cta__btns">
+        <a
+          class="btn btn--solid-light btn--lg"
+          href={whatsappLink()}
+          target="_blank"
+          rel="noopener"
+        >
+          <Icon nome="whatsapp" size={18} />
+          Chamar no WhatsApp
+        </a>
+        <a class="btn btn--light btn--lg" href={`mailto:${empresa.email}`}>Enviar um e-mail</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    padding-block: clamp(4rem, 10vw, 8rem) clamp(3.5rem, 8vw, 6rem);
+    overflow: hidden;
+  }
+
+  /* Brilho sutil atrás do título. Sem isso o topo fica chapado demais. */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -22rem;
+    left: 50%;
+    width: min(60rem, 130vw);
+    height: 40rem;
+    transform: translateX(-50%);
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      rgba(124, 58, 237, 0.11),
+      rgba(37, 99, 235, 0.07) 45%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  .hero__in {
+    position: relative;
+    max-width: 52rem;
+  }
+
+  .hero__h1 {
+    margin-top: 1rem;
+    font-size: var(--t-display);
+  }
+
+  .hero__lead {
+    margin-top: 1.5rem;
+    font-size: clamp(1.0625rem, 1rem + 0.6vw, 1.3125rem);
+  }
+
+  .hero__ctas {
+    margin-top: 2.25rem;
+  }
+
+  .hero__trust {
+    margin-top: 1.75rem;
+    font-size: var(--t-xs);
+    color: var(--muted);
+  }
+
+  /* ── Produtos ── */
+  .prod {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .prod__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1.375rem;
+  }
+
+  .prod__icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--r-sm);
+    background: var(--grad);
+    color: #fff;
+  }
+
+  .prod__nome {
+    font-size: 1.5rem;
+  }
+
+  .prod__tagline {
+    margin-top: 0.3125rem;
+    font-size: var(--t-sm);
+    font-weight: 600;
+    color: var(--blue);
+  }
+
+  .prod__desc {
+    margin-top: 1rem;
+    font-size: var(--t-sm);
+    color: var(--muted);
+  }
+
+  .prod__bullets {
+    margin-top: 1.375rem;
+    padding-top: 1.375rem;
+    border-top: 1px solid var(--line-soft);
+    flex: 1;
+  }
+
+  .prod__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    align-self: flex-start;
+    margin-top: 1.75rem;
+    font-size: var(--t-sm);
+    font-weight: 600;
+    color: var(--blue);
+    text-decoration: none;
+  }
+
+  .prod__link:hover {
+    gap: 0.625rem;
+    text-decoration: none;
+  }
+
+  /* ── Em breve ── */
+  .breve {
+    margin-top: 2rem;
+    padding: 1.5rem clamp(1.25rem, 3vw, 2rem);
+    border: 1px dashed var(--line);
+    border-radius: var(--r);
+  }
+
+  .breve__label {
+    font-size: var(--t-xs);
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .breve__lista {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    margin-top: 1.25rem;
+  }
+
+  .breve__item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .breve__icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.125rem;
+    height: 2.125rem;
+    border-radius: var(--r-sm);
+    background: #fff;
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+
+  .breve__txt {
+    display: grid;
+    line-height: 1.35;
+  }
+
+  .breve__txt strong {
+    font-size: var(--t-sm);
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .breve__txt span {
+    font-size: var(--t-xs);
+    color: var(--muted);
+  }
+
+  /* ── Serviços ── */
+  .serv__icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--r-sm);
+    background: #eff6ff;
+    color: var(--blue);
+    margin-bottom: 1.25rem;
+  }
+
+  .serv__titulo {
+    font-size: var(--t-h3);
+  }
+
+  .serv__desc {
+    margin-top: 0.75rem;
+    font-size: var(--t-sm);
+    color: var(--muted);
+  }
+
+  .serv__itens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.375rem;
+    padding-top: 1.375rem;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .serv__itens li {
+    padding: 0.3125rem 0.75rem;
+    border-radius: var(--r-full);
+    background: var(--bg-2);
+    font-size: var(--t-xs);
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+
+  /* ── Etapas ── */
+  .etapas {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    padding: 0;
+    list-style: none;
+    counter-reset: none;
+  }
+
+  .etapa {
+    position: relative;
+    padding-top: 1.75rem;
+    border-top: 2px solid var(--line);
+  }
+
+  .etapa::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 2.5rem;
+    height: 2px;
+    background: var(--grad);
+  }
+
+  .etapa__num {
+    font-size: var(--t-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--blue);
+  }
+
+  .etapa__titulo {
+    margin-top: 0.5rem;
+    font-size: var(--t-h3);
+  }
+
+  .etapa__desc {
+    margin-top: 0.625rem;
+    font-size: var(--t-sm);
+    color: var(--muted);
+  }
+
+  /* ── Público ── */
+  .publico {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  @media (min-width: 56rem) {
+    .publico {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+  }
+
+  .publico__h2 {
+    margin-top: 0.75rem;
+  }
+
+  .publico__lead {
+    margin-top: 1rem;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+  }
+
+  .chip {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--r-full);
+    background: #fff;
+    font-size: var(--t-sm);
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+
+  /* ── FAQ ── */
+  .faq {
+    max-width: 48rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .faq__item {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .faq__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.375rem 0;
+    font-size: var(--t-h3);
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .faq__q::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__sinal {
+    position: relative;
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .faq__sinal::before,
+  .faq__sinal::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto 0;
+    height: 1.5px;
+    background: var(--muted);
+    transition: transform 0.2s ease;
+  }
+
+  .faq__sinal::after {
+    transform: rotate(90deg);
+  }
+
+  .faq__item[open] .faq__sinal::after {
+    transform: rotate(0deg);
+  }
+
+  .faq__a {
+    padding-bottom: 1.5rem;
+    font-size: var(--t-sm);
+    color: var(--muted);
+    max-width: 62ch;
+  }
+
+  /* ── CTA ── */
+  .cta {
+    background: var(--grad);
+    color: #fff;
+    padding-block: clamp(3.5rem, 8vw, 5.5rem);
+  }
+
+  .cta__in {
+    max-width: 44rem;
+    text-align: center;
+  }
+
+  .cta__h2 {
+    color: #fff;
+    font-size: var(--t-h2);
+  }
+
+  .cta__p {
+    margin-top: 1rem;
+    font-size: var(--t-lead);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .cta__btns {
+    justify-content: center;
+    margin-top: 2rem;
+  }
+</style>

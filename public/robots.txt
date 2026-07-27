@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mjml.com.br/sitemap.xml

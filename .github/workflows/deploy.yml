@@ -1,0 +1,74 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build:
+    name: Build e publicar imagem
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    # Os segredos viram env no nível do job porque o contexto `secrets` NÃO é
+    # permitido em `if:` — só `env` é. É também mais seguro: o valor não é
+    # interpolado dentro do script do shell.
+    env:
+      COOLIFY_WEBHOOK: ${{ secrets.COOLIFY_WEBHOOK }}
+      COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # O nome do pacote no GHCR precisa ser minúsculo; o owner nem sempre é.
+      - name: Normalizar nome do repositório
+        run: echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      # Roda antes do Docker: um erro de tipo ou de template aparece aqui, em
+      # segundos, em vez de no meio do build da imagem.
+      - name: Verificar o projeto
+        run: npx astro check --minimumSeverity error
+
+      - name: Login no GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build e push da imagem
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.REPO_LC }}:latest
+            ${{ env.REGISTRY }}/${{ env.REPO_LC }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Avisa o Coolify que há imagem nova. O webhook vem de
+      # Coolify > recurso > Webhooks > Deploy; o token, de Keys & Tokens > API.
+      # Sem os dois segredos configurados, o passo é pulado sem falhar o job —
+      # dá para publicar a imagem antes de o Coolify existir.
+      - name: Disparar deploy no Coolify
+        if: env.COOLIFY_WEBHOOK != '' && env.COOLIFY_TOKEN != ''
+        run: |
+          curl --fail --silent --show-error \
+            --request GET "$COOLIFY_WEBHOOK" \
+            --header "Authorization: Bearer $COOLIFY_TOKEN"

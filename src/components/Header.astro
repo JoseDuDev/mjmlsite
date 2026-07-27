@@ -1,0 +1,183 @@
+---
+import Logo from './Logo.astro'
+import { whatsappLink } from '../data/site'
+
+const links = [
+  { href: '/#produtos', texto: 'Produtos' },
+  { href: '/#servicos', texto: 'Serviços' },
+  { href: '/#como-funciona', texto: 'Como funciona' },
+  { href: '/contato', texto: 'Contato' },
+]
+---
+
+<header class="hd">
+  <div class="container hd__in">
+    <a href="/" class="hd__brand" aria-label="MJML — página inicial">
+      <Logo />
+    </a>
+
+    <nav class="hd__nav" id="menu" aria-label="Principal">
+      {links.map((l) => <a href={l.href}>{l.texto}</a>)}
+    </nav>
+
+    <div class="hd__actions">
+      <a class="btn btn--primary hd__cta" href={whatsappLink()} target="_blank" rel="noopener">
+        Falar no WhatsApp
+      </a>
+      <button
+        type="button"
+        class="hd__burger"
+        id="burger"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        aria-controls="menu"
+      >
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  /* Fundo sólido, sem backdrop-filter: um blur em elemento sticky do tamanho
+     da viewport força o compositor a refazer o desfoque a cada frame de
+     scroll — jank garantido em celular fraco, que é o aparelho do público
+     deste site. Branco chapado também é o que o brief pede ("sem efeitos"). */
+  .hd {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hd__in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-height: 4.25rem;
+  }
+
+  .hd__brand {
+    display: flex;
+    align-items: center;
+    flex: none;
+  }
+
+  .hd__brand:hover {
+    text-decoration: none;
+  }
+
+  .hd__nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-inline-start: auto;
+  }
+
+  .hd__nav a {
+    color: var(--ink-2);
+    font-size: var(--t-sm);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .hd__nav a:hover {
+    color: var(--ink);
+  }
+
+  .hd__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: none;
+  }
+
+  .hd__burger {
+    display: none;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  .hd__burger span {
+    display: block;
+    width: 1rem;
+    height: 1.5px;
+    background: var(--ink);
+    transition: transform 0.2s ease;
+  }
+
+  .hd__burger[aria-expanded='true'] span:first-child {
+    transform: translateY(3.25px) rotate(45deg);
+  }
+
+  .hd__burger[aria-expanded='true'] span:last-child {
+    transform: translateY(-3.25px) rotate(-45deg);
+  }
+
+  @media (max-width: 60rem) {
+    .hd__nav {
+      position: absolute;
+      inset: 100% 0 auto 0;
+      display: none;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 0.5rem var(--gutter) 1.25rem;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hd__nav[data-open='true'] {
+      display: flex;
+    }
+
+    .hd__nav a {
+      padding: 0.875rem 0;
+      font-size: 1rem;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .hd__burger {
+      display: flex;
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .hd__cta {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const burger = document.getElementById('burger')
+  const menu = document.getElementById('menu')
+
+  burger?.addEventListener('click', () => {
+    const aberto = burger.getAttribute('aria-expanded') === 'true'
+    burger.setAttribute('aria-expanded', String(!aberto))
+    burger.setAttribute('aria-label', aberto ? 'Abrir menu' : 'Fechar menu')
+    menu?.setAttribute('data-open', String(!aberto))
+  })
+
+  // Fecha ao navegar para uma âncora: sem isso o menu tapa o alvo do link.
+  menu?.querySelectorAll('a').forEach((a) =>
+    a.addEventListener('click', () => {
+      burger?.setAttribute('aria-expanded', 'false')
+      burger?.setAttribute('aria-label', 'Abrir menu')
+      menu.setAttribute('data-open', 'false')
+    }),
+  )
+</script>

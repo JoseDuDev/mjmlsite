@@ -1,0 +1,65 @@
+---
+import Base from '../layouts/Base.astro'
+import Icon from '../components/Icon.astro'
+import { whatsappLink } from '../data/site'
+---
+
+<Base
+  titulo="Página não encontrada"
+  descricao="A página que você procurava não existe ou mudou de endereço."
+  caminho="/404"
+  noindex
+>
+  <section class="nf">
+    <div class="container nf__in">
+      <p class="nf__code grad-text">404</p>
+      <h1 class="nf__h1">Esta página não existe</h1>
+      <p class="lead nf__lead">
+        O endereço pode ter mudado, ou o link que te trouxe até aqui está desatualizado.
+      </p>
+      <div class="btn-row nf__btns">
+        <a class="btn btn--primary btn--lg" href="/">Voltar para o início</a>
+        <a class="btn btn--ghost btn--lg" href={whatsappLink()} target="_blank" rel="noopener">
+          <Icon nome="whatsapp" size={18} />
+          Falar no WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    display: grid;
+    place-items: center;
+    min-height: 62vh;
+    padding-block: clamp(3rem, 8vw, 6rem);
+    text-align: center;
+  }
+
+  .nf__in {
+    max-width: 36rem;
+  }
+
+  .nf__code {
+    font-size: clamp(4rem, 3rem + 6vw, 7rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .nf__h1 {
+    margin-top: 1rem;
+    font-size: var(--t-h2);
+  }
+
+  .nf__lead {
+    margin-top: 1rem;
+    margin-inline: auto;
+  }
+
+  .nf__btns {
+    justify-content: center;
+    margin-top: 2rem;
+  }
+</style>
