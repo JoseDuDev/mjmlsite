@@ -13,37 +13,23 @@ Pré-requisito: Etapas 1 a 3 do `../PLANO-DEPLOY-FASE1.md` concluídas (VPS cria
 
 ---
 
-## 1. Criar o repositório e publicar a imagem no GHCR
+## 1. Publicar no GitHub — ✅ repositório local pronto
 
-### 1a. Repositório local
+Repositório: <https://github.com/JoseDuDev/mjmlsite> (público)
 
-```bash
-cd mjml-site
-git init -b main
-git add .
-git commit -m "Site institucional MJML"
-```
+O `git init`, os dois commits e o `git remote add origin` **já estão feitos**.
+Falta só o push, que precisa da sua autenticação no GitHub:
 
-### 1b. Repositório remoto
-
-**Com o GitHub CLI** (instalar antes: `winget install GitHub.cli`, depois
-`gh auth login`):
-
-```bash
-gh repo create mjml-site --private --source=. --push
-```
-
-**Sem o CLI:** criar o repositório em <https://github.com/new> — **vazio**, sem
-README, sem `.gitignore` e sem licença, senão o primeiro push é rejeitado por
-histórico divergente. Depois:
-
-```bash
-git remote add origin https://github.com/<owner>/mjml-site.git
+```powershell
+cd C:\Projects\jel\mjml-site
 git push -u origin main
 ```
 
+Na primeira vez o Git Credential Manager abre uma janela pedindo login. Depois
+disso ele guarda a credencial e os pushes seguintes são diretos.
+
 O push em `main` dispara `.github/workflows/deploy.yml`: roda `astro check`,
-builda a imagem e publica em `ghcr.io/<owner>/mjml-site:latest`.
+builda a imagem e publica em `ghcr.io/josedudev/mjmlsite:latest`.
 
 > Se o workflow falhar com erro de permissão ao publicar o pacote, habilite em
 > **Settings → Actions → General → Workflow permissions** a opção
@@ -51,18 +37,22 @@ builda a imagem e publica em `ghcr.io/<owner>/mjml-site:latest`.
 
 Confirme em **GitHub → seu perfil → Packages** que o pacote apareceu.
 
-### Público ou privado?
+### Visibilidade do pacote
 
-Recomendo **tornar o pacote público** (Package settings → Change visibility):
+O repositório é público, mas **o pacote do GHCR nasce privado mesmo assim**.
+Depois do primeiro build, vá em **GitHub → seu perfil → Packages → mjmlsite →
+Package settings → Change visibility → Public**.
 
-- O plano Free do GitHub dá só **500 MB** para pacotes privados. Com Atendefy e
-  Horafy no mesmo lugar, isso estoura rápido.
+Vale a pena porque:
+
+- O plano Free dá só **500 MB** para pacotes privados. Com Atendefy e Horafy no
+  mesmo lugar, isso estoura rápido.
 - A imagem **não contém segredo nenhum** — é HTML estático mais nginx. Todas as
   variáveis entram em runtime pelo Coolify.
-- Pacote público dispensa credencial de registry no Coolify (passo 3).
+- Pacote público dispensa cadastrar credencial de registry no Coolify (passo 3).
 
-Se preferir privado, gere um PAT clássico com escopo `read:packages` e cadastre
-em **Coolify → Settings → Docker Registries**.
+Se preferir mantê-lo privado, gere um PAT clássico com escopo `read:packages` e
+cadastre em **Coolify → Settings → Docker Registries**.
 
 ---
 
@@ -103,7 +93,7 @@ versionada no repositório, igual ao Atendefy e ao Horafy.
 | Campo | Valor |
 |---|---|
 | Tipo | **Docker Image** |
-| Image | `ghcr.io/<owner>/mjml-site:latest` |
+| Image | `ghcr.io/josedudev/mjmlsite:latest` (tudo minúsculo) |
 | Ports Exposes | `80` |
 | Ports Mappings | *(vazio — o Traefik alcança pela rede interna)* |
 
@@ -111,20 +101,21 @@ versionada no repositório, igual ao Atendefy e ao Horafy.
 
 | Campo | Valor |
 |---|---|
-| Tipo | **Docker Compose** → *Private/Public Repository* |
-| Repositório | o `mjml-site` do passo 1 |
+| Tipo | **Docker Compose** → *Public Repository* |
+| Repositório | `https://github.com/JoseDuDev/mjmlsite` |
 | Branch | `main` |
 | Compose file | `docker-compose.coolify.yml` |
 
 Variáveis de ambiente (aba **Environment Variables**):
 
 ```
-GITHUB_REPOSITORY=<owner>/mjml-site
+GITHUB_REPOSITORY=josedudev/mjmlsite
 IMAGE_TAG=latest
 ```
 
-> O `<owner>` precisa estar **minúsculo** — o GHCR rejeita maiúscula no nome do
-> pacote. O CI já normaliza isso na hora do push; aqui é manual.
+> ⚠️ **`josedudev` em minúsculo, não `JoseDuDev`.** O GHCR rejeita maiúscula no
+> nome do pacote. O CI normaliza sozinho na hora do push (`${GITHUB_REPOSITORY,,}`),
+> mas aqui é digitado à mão — é o erro mais fácil de cometer neste passo.
 
 ---
 
@@ -237,7 +228,7 @@ No navegador, confirmar também:
 
 O CI marca cada imagem com o SHA do commit. Para voltar uma versão:
 
-- **Opção A:** troque a Image para `ghcr.io/<owner>/mjml-site:<sha-anterior>` → Deploy
+- **Opção A:** troque a Image para `ghcr.io/josedudev/mjmlsite:<sha-anterior>` → Deploy
 - **Opção B:** troque `IMAGE_TAG` de `latest` para o SHA anterior → Redeploy
 
 Volta em segundos, sem rebuild, sem git.
@@ -252,6 +243,6 @@ Volta em segundos, sem rebuild, sem git.
 | `www` dá erro de certificado | Não foi cadastrado no campo **Domains** do passo 4 — o redirect do nginx só roda *depois* do TLS |
 | Loop de redirecionamento | SSL/TLS da Cloudflare em **Flexible**. Mude para **Full (strict)** |
 | 404 em todas as páginas | Ports Exposes diferente de `80`, ou a imagem não subiu. Confira os logs do container |
-| `manifest unknown` no pull | `<owner>` com maiúscula, ou pacote privado sem credencial de registry cadastrada |
+| `manifest unknown` no pull | `JoseDuDev` com maiúscula em vez de `josedudev`, ou pacote ainda privado sem credencial de registry cadastrada |
 | Deploy não dispara no push | `COOLIFY_WEBHOOK` ou `COOLIFY_TOKEN` ausente — o passo é pulado de propósito, veja o log do job |
 | Container reiniciando | Erro de sintaxe no `nginx.conf`. `docker logs <container>` mostra a linha exata |

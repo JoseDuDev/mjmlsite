@@ -102,8 +102,10 @@ e, provavelmente, um aviso de cookies.
 **Passo a passo completo em [`DEPLOY-COOLIFY.md`](./DEPLOY-COOLIFY.md)**, com
 checklist de verificação, rollback e tabela de erros comuns.
 
+Repositório: <https://github.com/JoseDuDev/mjmlsite>
+
 Resumo: push em `main` → GitHub Actions roda `astro check`, builda e publica em
-`ghcr.io/<owner>/mjml-site:latest` → webhook avisa o Coolify → deploy.
+`ghcr.io/josedudev/mjmlsite:latest` → webhook avisa o Coolify → deploy.
 
 > O build precisa de **rede** para baixar as fontes. Funciona no GitHub Actions;
 > se um dia buildar em ambiente isolado, é isso que vai falhar.

@@ -18,7 +18,9 @@
 # nuvem laranja depois que o certificado sair, e é onde o CDN realmente rende.
 #
 # Variáveis a definir na UI do Coolify:
-#   GITHUB_REPOSITORY   ex.: joses/mjml-site  (minúsculo)
+#   GITHUB_REPOSITORY   josedudev/mjmlsite   ← MINÚSCULO. O GHCR rejeita
+#                       maiúscula no nome do pacote; o CI normaliza sozinho no
+#                       push, mas aqui é digitado à mão.
 #   IMAGE_TAG           latest, ou o SHA de um commit para fixar/voltar versão
 name: mjml-site
 
