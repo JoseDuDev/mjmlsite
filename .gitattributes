@@ -1,0 +1,17 @@
+# Normaliza fim de linha: o repositório guarda LF, o checkout usa o padrão da
+# plataforma. Sem isso, um checkout no Windows grava CRLF em nginx.conf e no
+# Dockerfile — o build acontece em Ubuntu no GitHub Actions, então não quebra
+# hoje, mas um build local no Windows passa a depender de sorte.
+* text=auto eol=lf
+
+# Arquivos que PRECISAM ser LF em qualquer situação: são lidos por ferramentas
+# Unix dentro do container.
+*.conf   text eol=lf
+*.sh     text eol=lf
+Dockerfile text eol=lf
+
+# Binários: o git não deve tentar normalizar nada.
+*.png    binary
+*.jpg    binary
+*.woff2  binary
+*.ico    binary
