@@ -51,6 +51,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Obrigatório por causa do cache do passo seguinte: o runner vem com o
+      # driver `docker` do buildx, que NÃO sabe exportar cache e falha com
+      # "Cache export is not supported for the docker driver". Este passo cria
+      # um builder com driver `docker-container`, que suporta.
+      - name: Preparar o Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build e push da imagem
         uses: docker/build-push-action@v6
         with:
