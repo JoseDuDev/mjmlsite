@@ -26,7 +26,10 @@ COPY security-headers.conf /etc/nginx/security-headers.conf
 # publicada no host.
 EXPOSE 80
 
+# 127.0.0.1, não localhost: dentro do container o localhost resolve ::1 primeiro
+# e o busybox wget não tenta o IPv4 em seguida — o healthcheck falharia sempre e
+# o Traefik tiraria o container do ar (visto em produção em 03/08/2026).
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget -qO- http://localhost/ >/dev/null 2>&1 || exit 1
+  CMD wget -qO- http://127.0.0.1/ >/dev/null 2>&1 || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]
