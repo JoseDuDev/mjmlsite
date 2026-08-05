@@ -4,8 +4,6 @@
  * Editar aqui muda o site inteiro — header, footer, páginas de produto,
  * sitemap e dados estruturados. Nenhum texto institucional deve ser digitado
  * direto num componente.
- *
- * ⚠️ ANTES DE PUBLICAR: preencher `whatsapp`, `email` e `telefoneExibicao`.
  */
 
 export const empresa = {
@@ -18,9 +16,8 @@ export const empresa = {
   dominio: 'mjml.com.br',
   url: 'https://mjml.com.br',
 
-  // TODO: trocar pelo número real, formato internacional só com dígitos.
-  whatsapp: '5500000000000',
-  telefoneExibicao: '(00) 00000-0000',
+  whatsapp: '5547988572233',
+  telefoneExibicao: '(47) 98857-2233',
   email: 'contato@mjml.com.br',
 
   // Endpoint do formulário de contato (Web3Forms, Formspree ou similar).
