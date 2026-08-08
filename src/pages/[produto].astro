@@ -54,13 +54,24 @@ const msg = `Olá! Vim pelo site e quero saber mais sobre o ${produto.nome}.`
           Quero conhecer
         </a>
         {
-          produto.url && (
-            <a class="btn btn--ghost btn--lg" href={produto.url} target="_blank" rel="noopener">
-              Acessar a plataforma
+          produto.site && (
+            <a class="btn btn--ghost btn--lg" href={produto.site} target="_blank" rel="noopener">
+              Visitar o site do {produto.nome}
             </a>
           )
         }
       </div>
+
+      {
+        produto.url && (
+          <p class="topo__cliente">
+            Já é cliente?{' '}
+            <a href={produto.url} target="_blank" rel="noopener">
+              Entrar na plataforma
+            </a>
+          </p>
+        )
+      }
 
       <p class="topo__quem">{produto.paraQuem}</p>
     </div>
@@ -243,6 +254,17 @@ const msg = `Olá! Vim pelo site e quero saber mais sobre o ${produto.nome}.`
 
   .topo__ctas {
     margin-top: 2rem;
+  }
+
+  .topo__cliente {
+    margin-top: 1.25rem;
+    font-size: var(--t-sm);
+    color: var(--muted);
+  }
+
+  .topo__cliente a {
+    color: var(--blue);
+    font-weight: 600;
   }
 
   .topo__quem {

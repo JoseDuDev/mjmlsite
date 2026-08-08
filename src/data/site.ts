@@ -44,6 +44,9 @@ export type Produto = {
   descricao: string
   bullets: string[]
   icone: string
+  /** Página de vendas própria do produto (ex.: atende.mjml.com.br). */
+  site: string | null
+  /** Entrada da plataforma para quem já é cliente (tela de login). */
   url: string | null
   disponivel: boolean
   paraQuem: string
@@ -70,6 +73,7 @@ export const produtos: Produto[] = [
       'Histórico completo de cada conversa',
     ],
     icone: 'chat',
+    site: 'https://atende.mjml.com.br',
     url: 'https://app.atende.mjml.com.br',
     disponivel: true,
     paraQuem: 'Negócios que perdem venda por demorar a responder no WhatsApp.',
@@ -108,7 +112,8 @@ export const produtos: Produto[] = [
       'Cliente remarca sozinho, sem te procurar',
     ],
     icone: 'calendar',
-    url: 'https://agenda.mjml.com.br',
+    site: 'https://agenda.mjml.com.br',
+    url: 'https://agenda.mjml.com.br/login',
     disponivel: true,
     paraQuem: 'Clínicas, salões, barbearias, consultórios e prestadores de serviço.',
     landing: {
@@ -145,6 +150,7 @@ export const produtos: Produto[] = [
       'Controle de devolução e atraso',
     ],
     icone: 'box',
+    site: null,
     url: null,
     disponivel: false,
     paraQuem: 'Locadoras de equipamento, festa, ferramenta e material de construção.',
@@ -161,6 +167,7 @@ export const produtos: Produto[] = [
       'Pagamento online integrado',
     ],
     icone: 'bag',
+    site: null,
     url: null,
     disponivel: false,
     paraQuem: 'Restaurantes, lanchonetes, pizzarias e food service.',
@@ -177,6 +184,7 @@ export const produtos: Produto[] = [
       'Painel de pedidos e clientes',
     ],
     icone: 'cart',
+    site: null,
     url: null,
     disponivel: false,
     paraQuem: 'Lojas que querem vender direto, sem intermediário.',

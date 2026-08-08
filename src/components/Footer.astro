@@ -24,8 +24,8 @@ const ano = new Date().getFullYear()
             {
               produtos.map((p) => (
                 <li>
-                  {p.disponivel && p.url ? (
-                    <a href={p.url}>{p.nome}</a>
+                  {p.disponivel && (p.site ?? p.url) ? (
+                    <a href={p.site ?? p.url}>{p.nome}</a>
                   ) : (
                     <span class="ft__soon">{p.nome} · em breve</span>
                   )}
