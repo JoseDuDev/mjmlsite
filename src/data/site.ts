@@ -154,6 +154,27 @@ export const produtos: Produto[] = [
     url: null,
     disponivel: false,
     paraQuem: 'Locadoras de equipamento, festa, ferramenta e material de construção.',
+    landing: {
+      problema:
+        'Saber o que está livre para o fim de semana obriga a olhar caderno, planilha e conversa de WhatsApp ao mesmo tempo. No meio disso o mesmo item é prometido para dois clientes, a caução passa em branco e o que não voltou só aparece quando alguém precisa dele.',
+      passos: [
+        {
+          titulo: 'Montamos o seu catálogo',
+          texto:
+            'Cada item com quantidade, valor da diária e caução. Sua página fica no ar com o nome do seu negócio.',
+        },
+        {
+          titulo: 'O cliente reserva o período',
+          texto:
+            'Ele escolhe as datas e vê o que está livre de verdade naquele intervalo. O valor sai calculado e o item sai do estoque na hora, sem risco de alugar duas vezes.',
+        },
+        {
+          titulo: 'A devolução não depende da sua memória',
+          texto:
+            'Você marca a retirada e a volta em um toque. O aviso de devolução sai sozinho, o atraso vira multa e a caução volta para o cliente quando o item volta para você.',
+        },
+      ],
+    },
   },
   {
     id: 'delivery',
