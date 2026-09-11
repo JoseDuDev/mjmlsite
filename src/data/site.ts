@@ -143,7 +143,7 @@ export const produtos: Produto[] = [
     nome: 'Aluga',
     tagline: 'Aluguel de itens online',
     descricao:
-      'Catálogo, reserva por período, contrato e devolução — tudo em um lugar só, sem planilha e sem caderno.',
+      'Catálogo, reserva por período, caução e devolução — tudo em um lugar só, sem planilha e sem caderno.',
     bullets: [
       'Catálogo com disponibilidade em tempo real',
       'Reserva por período com cálculo automático',
